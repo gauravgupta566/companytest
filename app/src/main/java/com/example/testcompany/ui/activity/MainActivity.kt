@@ -1,6 +1,5 @@
 package com.example.testcompany.ui.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
@@ -39,11 +38,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
 
 
-        val myViewModelfactory=  MyViewModelfactory("mymodel")
+        val myViewModelfactory=  MyViewModelfactory()
 
        val model= ViewModelProvider(this,myViewModelfactory).get(DataComedy::class.java)
-       val page= model.getData(this,pageNumber)
-       getHeading.text= page.title
+
+        model.getResult().observe(this, androidx.lifecycle.Observer {
+            getHeading.text= it.title
+            addingData(it)
+
+        })
+
+        model.getData(this,pageNumber)
+
+
         if (resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             orientationLandscape=true
         }
@@ -60,7 +67,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         adapter= ListItem(list,this)
 
-        addingData(page)
         recyclerView.adapter=adapter
 
 
@@ -75,8 +81,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     if (pageNumber<3 && canLoad &&!dataLoading) {
                            dataLoading=true
                             pageNumber++
-                            val data= model.getData(this@MainActivity,pageNumber)
-                            addingData(data)
+                             model.getData(this@MainActivity,pageNumber)
 
 
                         //                    && totalItemCount >= ClothesFragment.itemsCount

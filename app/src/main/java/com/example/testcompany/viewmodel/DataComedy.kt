@@ -2,6 +2,7 @@ package com.example.testcompany.viewmodel
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.testcompany.model.ComedyList
@@ -11,11 +12,11 @@ import com.google.gson.Gson
 import java.io.InputStream
 
 
-class DataComedy(var aa:String) :ViewModel(){
+class DataComedy :ViewModel(){
 
-   lateinit var page: Page
+   var result=MutableLiveData<Page>()
 
-   fun getData(context: Context,pageNumber:Int):Page{
+   fun getData(context: Context,pageNumber:Int){
      val fileName: String
        if(pageNumber==1){
            fileName="firstapi.json"
@@ -33,14 +34,15 @@ class DataComedy(var aa:String) :ViewModel(){
            val  json = inputStream.bufferedReader().use{it.readText()}
            val gson=Gson()
            val  comedyList=  gson.fromJson(json, ComedyList::class.java)
-           page=  comedyList.page
+           result.postValue(comedyList.page)
+
        } catch (ex: Exception) {
            ex.printStackTrace()
        }
+    }
 
-
-
-       return page
+   fun getResult():LiveData<Page>{
+        return result
     }
 
 
