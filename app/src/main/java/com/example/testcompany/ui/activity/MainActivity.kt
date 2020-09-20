@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -40,7 +41,26 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         val myViewModelfactory=  MyViewModelfactory()
 
-       val model= ViewModelProvider(this,myViewModelfactory).get(DataComedy::class.java)
+
+
+        if (resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            orientationLandscape=true
+        }
+
+
+        if (orientationLandscape){
+
+            gridLayoutManager=GridLayoutManager(this,7)
+            recyclerView.addItemDecoration(GridSpacingItemDecoration(10,30))
+        }
+        else{
+
+            gridLayoutManager=GridLayoutManager(this,3)
+            recyclerView.addItemDecoration(GridSpacingItemDecoration(10,30))
+        }
+        recyclerView.layoutManager=gridLayoutManager
+
+        val model= ViewModelProvider(this,myViewModelfactory).get(DataComedy::class.java)
 
         model.getResult().observe(this, androidx.lifecycle.Observer {
             getHeading.text= it.title
@@ -50,20 +70,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         model.getData(this,pageNumber)
 
-
-        if (resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            orientationLandscape=true
-        }
-
-        if (orientationLandscape){
-            gridLayoutManager=GridLayoutManager(this,7)
-            recyclerView.addItemDecoration(GridSpacingItemDecoration(7,30,false))
-        }
-        else{
-            gridLayoutManager=GridLayoutManager(this,3)
-            recyclerView.addItemDecoration(GridSpacingItemDecoration(3,30,false))
-        }
-        recyclerView.layoutManager=gridLayoutManager
 
         adapter= ListItem(list,this)
 
@@ -178,6 +184,26 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+   /* override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            gridLayoutManager.spanCount = 7
+            recyclerView.addItemDecoration(GridSpacingItemDecoration(7,30,false))
+
+
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            gridLayoutManager.spanCount = 3
+            recyclerView.addItemDecoration(GridSpacingItemDecoration(3,30,false))
+
+
+        }
+        recyclerView.layoutManager = gridLayoutManager;
+
+    }
+*/
 
 
 }

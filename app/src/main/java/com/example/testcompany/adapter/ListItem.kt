@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
@@ -50,6 +51,7 @@ class ListItem(private var list:ArrayList<Content>,private val context: Context)
         fun  bind(item:Content){
              Glide.with(context).load(getImage(item.poster_image))
                 .error(R.drawable.placeholder_for_missing_posters)
+                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(
                         e: GlideException?,
